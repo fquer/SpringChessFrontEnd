@@ -1,0 +1,120 @@
+
+{% for item in rows %}                                                                                                                                                                         
+    <p style="display: none;" id="board">{{ item }}</p>
+    
+    <style>
+
+        html {
+            background-color: grey;
+        }
+
+        table{
+            border: 5px solid rgb(150, 107, 107)
+        }
+
+        th, td {
+            border: 5px solid black;
+            width: 25px;
+            height: 25px;
+        }
+    </style>
+
+    <script>
+        function clickEvent(id) {
+            block = document.getElementById(id);
+            if (block.bgColor == 'red') {
+                // selected olmaktan kaldir
+                window.location.href = window.location.href.split('5000')[0] + "5000/cancelSelectedCoordinate?player=" + connectedPlayer + "&selectedCoordinate=" + id + "&color=" + connectedColor;
+            }
+            else if (block.bgColor == 'green') {
+                // move to coordinate ver zaten map objesinde selected coordinate var
+                window.location.href = window.location.href.split('5000')[0] + "5000/gameplay?player=" + connectedPlayer + "&moveToCoordinate=" + id + "&color=" + connectedColor;
+            }
+            else {
+                window.location.href = window.location.href.split('5000')[0] + "5000/checkMoveableArea?player=" + connectedPlayer + "&selectedCoordinate=" + id + "&color=" + connectedColor;
+            }
+
+        }
+
+        function createBoard() {
+            if (document.getElementById('tableBoard') == null) {
+                table = document.createElement('table')
+                table.setAttribute('id', 'tableBoard')
+                tableBody = document.createElement('tbody')
+
+                chars = ['A','B','C','D','E','F','G','H']
+                nums = ['8', '7', '6', '5', '4', '3', '2', '1']
+                
+                if (connectedColor == 'White') {
+                    var i = 0;
+                    var iBreakPoint = 8;
+                }
+                else if (connectedColor == 'Black') {
+                    var i = 7;
+                    var iBreakPoint = -1;
+                }
+
+                for (i; i != iBreakPoint;) {
+                    tr = document.createElement('tr')
+                    if (connectedColor == 'White') {
+                        var j = 0;
+                        var jBreakPoint = 8;
+                    }
+                    else if (connectedColor == 'Black') {
+                        var j = 7;
+                        var jBreakPoint = -1;
+                    }
+                    for (j; j != jBreakPoint;) {
+                        td = document.createElement('td')
+                        td.setAttribute('id', chars[j] + nums[i])
+                        td.setAttribute('onclick', 'clickEvent(this.id)')
+                        tr.appendChild(td)
+                        console.log(chars[j] + nums[i])
+                        if (connectedColor == 'White') {
+                            j++;
+                        }
+                        else if (connectedColor == 'Black') {
+                            j--;
+                        }
+                    }
+                    tableBody.appendChild(tr)
+                    if (connectedColor == 'White') {
+                        i++;
+                    }
+                    else if (connectedColor == 'Black') {
+                        i--;
+                    }
+                }
+                table.appendChild(tableBody)
+                document.body.appendChild(table)
+            }
+        }
+        
+        function init() {
+            var board = "{{ item }}";
+            board = board.replaceAll('&#34;','"')
+            moveableCoordinates = JSON.parse(board).board.moveableCoordinates
+            selectedCoordinate = JSON.parse(board).board.selectedCoordinate
+            map = JSON.parse(board).board.map
+            mappedBoard = new Map(Object.entries(map))
+            for (const cell of mappedBoard) {
+                document.getElementById(cell[0]).innerText = cell[1].piece
+                document.getElementById(cell[0]).bgColor = '';
+            }
+            for (var i = 0; i <= moveableCoordinates.length - 1; i++) {
+                document.getElementById(moveableCoordinates[i]).bgColor = 'green';
+            }
+            if (selectedCoordinate != null) {
+                document.getElementById(selectedCoordinate).bgColor = 'red';
+            }
+        }
+        
+        var connectedPlayer = '{{ player }}';
+        var connectedColor = '{{ color }}';
+        console.log(connectedPlayer);
+        console.log(connectedColor);
+        createBoard();
+        init();
+    </script>
+
+{% endfor %}
