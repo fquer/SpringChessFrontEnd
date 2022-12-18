@@ -82,8 +82,15 @@ def connectToGame():
     else:
         return redirect('/stream?player={}&color={}'.format(player, color))
 
+storedWhite = ""
+storedBlack = ""
+
 @app.route('/stream')
 def stream_view():
+    global storedWhite
+    global storedBlack
+    print(storedWhite)
+    print(storedBlack)
     player = request.args.get('player')
     color = request.args.get('color')
     options= {
@@ -92,8 +99,14 @@ def stream_view():
         }
     }
     url = 'http://localhost:8080/game/gamestatus'
-    rows = generate(url, options)
-    return Response(stream_template('game.html', rows = rows, player = player, color = color))
+    if color == 'White':
+        print('byz')
+        storedWhite = generate(url, options)
+        return Response(stream_template('game.html', rows = storedWhite, player = player, color = color))
+    elif color == 'Black':
+        print('syh')
+        storedBlack = generate(url, options)
+        return Response(stream_template('game.html', rows = storedBlack, player = player, color = color))
 
 
 @app.route('/gameplay')
