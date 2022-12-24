@@ -14,8 +14,8 @@
 
         th, td {
             border: 5px solid black;
-            width: 25px;
-            height: 25px;
+            width: 60px;
+            height: 60px;
         }
     </style>
 
@@ -98,13 +98,12 @@
             map = JSON.parse(board).board.map
             mappedBoard = new Map(Object.entries(map))
             for (const cell of mappedBoard) {
-                console.log(cell)
-                img = document.createElement('img')
-                img.setAttribute('src', 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png")
-                document.getElementById(cell[0]).innerText = cell[1].piece
+                if (cell[1].piece != "Empty") {
+                    img = document.createElement('img')
+                    img.setAttribute('src', 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png")
+                    document.getElementById(cell[0]).appendChild(img)
+                }
                 document.getElementById(cell[0]).bgColor = '';
-                document.getElementById(cell[0]).appendChild(img)
-
             }
             for (var i = 0; i <= moveableCoordinates.length - 1; i++) {
                 document.getElementById(moveableCoordinates[i]).bgColor = 'green';
