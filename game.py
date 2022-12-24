@@ -19,10 +19,16 @@ def generate(url, options):
         if type(temp) == str:
             temp = x
             yield x.text
+            req = json.loads(x.text)
+            if (req['board']['winner'] != 'Empty'):
+                break
         else:
             if temp.text != x.text:
                 temp = x
                 yield x.text
+                req = json.loads(x.text)
+                if (req['board']['winner'] != 'Empty'):
+                    break
         sleep(1)
 
 @app.route('/')

@@ -1,7 +1,6 @@
 
 {% for item in rows %}                                                                                                                                                                         
     <p style="display: none;" id="board">{{ item }}</p>
-    
     <style>
 
         html {
@@ -15,7 +14,7 @@
         th, td {
             border: 5px solid black;
             width: 60px;
-            height: 60px;
+            height: 72px;
         }
     </style>
 
@@ -91,17 +90,24 @@
         }
         
         function init() {
-            var board = "{{ item }}";
-            board = board.replaceAll('&#34;','"')
             moveableCoordinates = JSON.parse(board).board.moveableCoordinates
             selectedCoordinate = JSON.parse(board).board.selectedCoordinate
             map = JSON.parse(board).board.map
             mappedBoard = new Map(Object.entries(map))
             for (const cell of mappedBoard) {
-                if (cell[1].piece != "Empty") {
-                    img = document.createElement('img')
-                    img.setAttribute('src', 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png")
-                    document.getElementById(cell[0]).appendChild(img)
+                
+                if (cell[1].piece == "Empty" && document.getElementById(cell[0]).childNodes.length != 0) {
+                    document.getElementById(cell[0]).removeChild(document.getElementById(cell[0]).childNodes[0])
+                }
+                else if (cell[1].piece != "Empty") {
+                    if (document.getElementById(cell[0]).childNodes.length != 0) {
+                        document.getElementById(cell[0]).childNodes[0].src = 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png"
+                    }
+                    else {
+                        img = document.createElement('img')
+                        img.setAttribute('src', 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png")
+                        document.getElementById(cell[0]).appendChild(img)
+                    }
                 }
                 document.getElementById(cell[0]).bgColor = '';
             }
@@ -111,14 +117,63 @@
             if (selectedCoordinate != null) {
                 document.getElementById(selectedCoordinate).bgColor = 'red';
             }
+
+            winner = JSON.parse(board).board.winner
+            if (winner != 'Empty') {
+                winnerLabel = document.createElement('h1')
+                winnerLabel.setAttribute('id', 'winner')
+                winnerLabel.innerText = 'Winner is ' + winner + '!'
+                document.body.appendChild(winnerLabel)
+            }
+            else {
+                if (document.getElementById('checkStatus') == null) {
+                    checkStatusLabel = document.createElement('h1')
+                    checkStatusLabel.setAttribute('id', 'checkStatus')
+                    document.body.appendChild(checkStatusLabel)
+                }
+                else {
+                    checkStatusLabel = document.getElementById('checkStatus')
+                }
+                checkStatus = JSON.parse(board).board.checkStatus
+                if (checkStatus) {
+                    checkStatusLabel.innerText = 'Check!'
+                }
+                else {
+                    checkStatusLabel.innerText = ''
+                }
+            }
         }
         
         var connectedPlayer = '{{ player }}';
         var connectedColor = '{{ color }}';
         console.log(connectedPlayer);
         console.log(connectedColor);
-        createBoard();
-        init();
-    </script>
 
+        var board = "{{ item }}";
+        board = board.replaceAll('&#34;','"')
+        player1 = JSON.parse(board).player1
+        player2 = JSON.parse(board).player2
+        
+        if (player1 == null || player2 == null) {
+            if (document.getElementById('waitPlayer') == null) {
+                waitPlayer = document.createElement('h1')
+                waitPlayer.setAttribute('id', 'waitPlayer')
+                waitPlayer.innerText = 'Waiting for player...'
+                document.body.appendChild(waitPlayer)
+            }
+            else {
+                waitPlayer = document.getElementById('waitPlayer')
+                waitPlayer.innerText = 'Waiting for player...'
+            }
+        }
+        else {
+            waitPlayer = document.getElementById('waitPlayer')
+            if (waitPlayer != null) {
+                waitPlayer.remove()
+            }
+            createBoard();
+            init();
+        }
+
+    </script>
 {% endfor %}
