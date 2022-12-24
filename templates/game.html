@@ -100,7 +100,7 @@
             for (const cell of mappedBoard) {
                 console.log(cell)
                 img = document.createElement('img')
-                img.setAttribute('src', './images/' + cell[1].colour + cell[1].piece)
+                img.setAttribute('src', 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png")
                 document.getElementById(cell[0]).innerText = cell[1].piece
                 document.getElementById(cell[0]).bgColor = '';
                 document.getElementById(cell[0]).appendChild(img)
