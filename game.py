@@ -117,7 +117,8 @@ def gameplay():
 
     options = {
         "player": {
-            "login": player
+            "login": player,
+            "color": color
         },
         "moveToCoordinate": moveToCoordinate
     }
@@ -134,7 +135,8 @@ def checkMoveableArea():
 
     options = {
         "player": {
-            "login": player
+            "login": player,
+            "color": color
         },
         "selectedCoordinate": selectedCoordinate,
     }

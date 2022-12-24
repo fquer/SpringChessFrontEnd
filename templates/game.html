@@ -98,8 +98,13 @@
             map = JSON.parse(board).board.map
             mappedBoard = new Map(Object.entries(map))
             for (const cell of mappedBoard) {
+                console.log(cell)
+                img = document.createElement('img')
+                img.setAttribute('src', './images/' + cell[1].colour + cell[1].piece)
                 document.getElementById(cell[0]).innerText = cell[1].piece
                 document.getElementById(cell[0]).bgColor = '';
+                document.getElementById(cell[0]).appendChild(img)
+
             }
             for (var i = 0; i <= moveableCoordinates.length - 1; i++) {
                 document.getElementById(moveableCoordinates[i]).bgColor = 'green';
