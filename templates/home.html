@@ -6,35 +6,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-    
+    <style>
+        html {
+            background-color: rgb(230, 163, 62);
+        }
+
+        #mainDiv {
+            margin: 0 auto;
+            margin-top: 5%;
+            width: 440px;
+        }
+
+        .label {
+            font-family: Comic Sans MS;
+            color: azure;
+            -webkit-text-stroke: 0.8px black;
+            font-size: 35px;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .selectionMain {
+            padding: 20px;
+        }
+
+        .selection {
+            width: 50%;
+            float: left;
+            text-align: center;
+        }
+
+        #playas {
+            margin: auto;
+            width: 120px;
+        }
+
+        .input {
+            text-align: center;
+            margin: auto;
+            margin-top: 3%;
+            display: block;
+            width: 300px;
+            font-family: Comic Sans MS;
+            font-size: 25px;
+        }
+
+        .button {
+            text-align: center;
+            margin: auto;
+            display: block;
+            width: 252px;
+            margin-top: 5%;
+        }
+
+        .connect {
+            width: 330px;
+        }
+
+        #connectAs {
+            margin: auto;
+            width: 190px;
+        }
+
+    </style>
 
 </head>
 <body>
-    
+    <div id = "mainDiv">
+        {% if gameStatus == '0' or gameStatus == '1' %}
+            <p class="label" id="playas"> Play as </p>
+            <div class = "selectionMain">
+                <div class="selection">
+                    <input type="checkbox" id="player1" name="White" value="player1" onclick="check(this.id)">
+                    <label class="label" for="player1"> White </label>
+                </div>
+                <div class="selection">
+                    <input type="checkbox" id="player2" name="Black" value="player2" onclick="check(this.id)">
+                    <label class="label" for="player2"> Black </label>
+                </div>
+            </div>
+            
+            <br><br>
 
-    {% if gameStatus == '0' or gameStatus == '1' %}
-        <p> Play as </p>
-        <input type="checkbox" id="player1" name="White" value="player1" onclick="check(this.id)">
-        <label for="player1"> White </label><br>
-        <input type="checkbox" id="player2" name="Black" value="player2" onclick="check(this.id)">
-        <label for="player2"> Black </label><br><br>
+            <input class="input" type="text" id="playerName" placeholder="Player Name">
+            
+            <br><br>
+        {% endif %}
 
-        <label for="playerName"> Player Name: </label>
-        <input type="text" id="playerName">
-        
-        <br><br>
-    {% endif %}
-
-    {% if gameStatus == '0' %}
-        <button type="button" onclick="startGame()">Start Game!</button>
-    {% elif gameStatus == '1' %}
-        <button type="button" onclick="connectToGame()">Connect To Game!</button>
-    {% else %}
-        <p> Connect as </p>
-        <button type="button" onclick="joinGame(this.id)" id="player1">{{ player1 }}</button>
-        <button type="button" onclick="joinGame(this.id)" id="player2">{{ player2 }}</button>
-    {% endif %}
-
+        {% if gameStatus == '0' %}
+            <button class="label button" type="button" onclick="startGame()">Start Game!</button>
+        {% elif gameStatus == '1' %}
+            <button class="label button connect" type="button" onclick="connectToGame()">Connect To Game!</button>
+        {% else %}
+            <p class="label" id="connectAs"> Connect as </p>
+            <button class="label button" type="button" onclick="joinGame(this.id)" id="player1">{{ player1 }}</button>
+            <button class="label button" type="button" onclick="joinGame(this.id)" id="player2">{{ player2 }}</button>
+        {% endif %}
+    </div>
 
     <script>
         function check(id) {
@@ -55,20 +127,30 @@
         }
         
         function startGame() {
-            if (document.getElementById('player1').checked) {
-                window.location.href = window.location.href.split('5000')[0] + "5000/startGame?player=" + document.getElementById('playerName').value + "&color=" + document.getElementById('player1').name;
+            if (document.getElementById('playerName').value != '') {
+                if (document.getElementById('player1').checked) {
+                    window.location.href = window.location.href.split('5000')[0] + "5000/startGame?player=" + document.getElementById('playerName').value + "&color=" + document.getElementById('player1').name;
+                }
+                else if (document.getElementById('player2').checked) {
+                    window.location.href = window.location.href.split('5000')[0] + "5000/startGame?player=" + document.getElementById('playerName').value + "&color=" + document.getElementById('player2').name;
+                }
             }
-            else if (document.getElementById('player2').checked) {
-                window.location.href = window.location.href.split('5000')[0] + "5000/startGame?player=" + document.getElementById('playerName').value + "&color=" + document.getElementById('player2').name;
+            else {
+                document.getElementById('playerName').style.borderColor = 'red';
             }
         }
 
         function connectToGame() {
-            if (document.getElementById('player1').checked) {
-                window.location.href = window.location.href.split('5000')[0] + "5000/connectToGame?player=" + document.getElementById('playerName').value + "&color=" + document.getElementById('player1').name;
+            if (document.getElementById('playerName').value != '') {
+                if (document.getElementById('player1').checked) {
+                    window.location.href = window.location.href.split('5000')[0] + "5000/connectToGame?player=" + document.getElementById('playerName').value + "&color=" + document.getElementById('player1').name;
+                }
+                else if (document.getElementById('player2').checked) {
+                    window.location.href = window.location.href.split('5000')[0] + "5000/connectToGame?player=" + document.getElementById('playerName').value + "&color=" + document.getElementById('player2').name;
+                }
             }
-            else if (document.getElementById('player2').checked) {
-                window.location.href = window.location.href.split('5000')[0] + "5000/connectToGame?player=" + document.getElementById('playerName').value + "&color=" + document.getElementById('player2').name;
+            else {
+                document.getElementById('playerName').style.borderColor = 'red';
             }
         }
 

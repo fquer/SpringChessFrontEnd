@@ -4,7 +4,7 @@
     <style>
 
         html {
-            background-color: grey;
+            background-color: rgb(230, 163, 62);
         }
 
         table{
@@ -16,23 +16,50 @@
             width: 60px;
             height: 72px;
         }
+
+        #waitPlayer {
+            margin: 0 auto;
+            margin-top: 5%;
+            width: 335px;
+            font-family: Comic Sans MS;
+            color: azure;
+            -webkit-text-stroke: 1px black;
+        }
     </style>
 
     <script>
         function clickEvent(id) {
             block = document.getElementById(id);
-            if (block.bgColor == 'red') {
+            if (block.childNodes[0].style.backgroundColor == 'red') {
                 // selected olmaktan kaldir
                 window.location.href = window.location.href.split('5000')[0] + "5000/cancelSelectedCoordinate?player=" + connectedPlayer + "&selectedCoordinate=" + id + "&color=" + connectedColor;
             }
-            else if (block.bgColor == 'green') {
+            else if (block.childNodes[0].src.includes('moveableArea') || block.style.backgroundColor == 'green') {
                 // move to coordinate ver zaten map objesinde selected coordinate var
+                moveableCoordinates = null;
                 window.location.href = window.location.href.split('5000')[0] + "5000/gameplay?player=" + connectedPlayer + "&moveToCoordinate=" + id + "&color=" + connectedColor;
             }
             else {
                 window.location.href = window.location.href.split('5000')[0] + "5000/checkMoveableArea?player=" + connectedPlayer + "&selectedCoordinate=" + id + "&color=" + connectedColor;
             }
 
+        }
+
+        function reset() {
+            square = 0;
+            for(let i = 0; i != 8; i++) {
+                for (let j = 7; j != -1; j--) {
+                    console.log('cizityom')
+                    if (square % 2 == 0) {
+                        document.getElementById(chars[j] + nums[i]).style.backgroundColor = 'grey';
+                    }
+                    else {
+                        document.getElementById(chars[j] + nums[i]).style.backgroundColor = 'white';
+                    }
+                    square += 1;
+                }
+                square += 1;
+            }
         }
 
         function createBoard() {
@@ -43,7 +70,7 @@
 
                 chars = ['A','B','C','D','E','F','G','H']
                 nums = ['8', '7', '6', '5', '4', '3', '2', '1']
-                
+                let square = 1;
                 if (connectedColor == 'White') {
                     var i = 0;
                     var iBreakPoint = 8;
@@ -67,8 +94,16 @@
                         td = document.createElement('td')
                         td.setAttribute('id', chars[j] + nums[i])
                         td.setAttribute('onclick', 'clickEvent(this.id)')
+                        td.style.backgroundColor = '';
+                        console.log('cizityom')
+                        if (square % 2 == 0) {
+                            td.style.backgroundColor = 'grey';
+                        }
+                        else {
+                            td.style.backgroundColor = 'white';
+                        }
+                        square += 1;
                         tr.appendChild(td)
-                        console.log(chars[j] + nums[i])
                         if (connectedColor == 'White') {
                             j++;
                         }
@@ -76,6 +111,7 @@
                             j--;
                         }
                     }
+                    square += 1;
                     tableBody.appendChild(tr)
                     if (connectedColor == 'White') {
                         i++;
@@ -95,13 +131,14 @@
             map = JSON.parse(board).board.map
             mappedBoard = new Map(Object.entries(map))
             for (const cell of mappedBoard) {
-                
+
                 if (cell[1].piece == "Empty" && document.getElementById(cell[0]).childNodes.length != 0) {
                     document.getElementById(cell[0]).removeChild(document.getElementById(cell[0]).childNodes[0])
                 }
                 else if (cell[1].piece != "Empty") {
                     if (document.getElementById(cell[0]).childNodes.length != 0) {
                         document.getElementById(cell[0]).childNodes[0].src = 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png"
+                        document.getElementById(cell[0]).childNodes[0].style.backgroundColor = '';
                     }
                     else {
                         img = document.createElement('img')
@@ -109,13 +146,22 @@
                         document.getElementById(cell[0]).appendChild(img)
                     }
                 }
-                document.getElementById(cell[0]).bgColor = '';
             }
+            console.log(moveableCoordinates)
+            reset()
             for (var i = 0; i <= moveableCoordinates.length - 1; i++) {
-                document.getElementById(moveableCoordinates[i]).bgColor = 'green';
+                if (document.getElementById(moveableCoordinates[i]).childNodes[0] != null) {
+                    document.getElementById(moveableCoordinates[i]).style.backgroundColor = 'green'
+                    console.log('girdi')
+                }
+                else {
+                    img = document.createElement('img')
+                    img.setAttribute('src', 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/moveableArea.png')
+                    document.getElementById(moveableCoordinates[i]).appendChild(img)
+                }
             }
             if (selectedCoordinate != null) {
-                document.getElementById(selectedCoordinate).bgColor = 'red';
+                document.getElementById(selectedCoordinate).childNodes[0].style.backgroundColor = 'red';
             }
 
             winner = JSON.parse(board).board.winner
@@ -146,8 +192,6 @@
         
         var connectedPlayer = '{{ player }}';
         var connectedColor = '{{ color }}';
-        console.log(connectedPlayer);
-        console.log(connectedColor);
 
         var board = "{{ item }}";
         board = board.replaceAll('&#34;','"')
@@ -174,6 +218,5 @@
             createBoard();
             init();
         }
-
     </script>
 {% endfor %}
