@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+
+    <style>
+        .label {
+            font-family: Comic Sans MS;
+            font-weight: bold;
+            color: azure;
+            -webkit-text-stroke: 1px black;
+            font-size: 30px;
+        }
+        html {
+            background-color: rgb(230, 163, 62);
+        }
+        table {
+            border-collapse: collapse;
+            text-align: center;
+        }
+        tr {
+            border: 5px solid black;
+        }
+        td {
+            border: 5px solid black;
+        }
+        .viewBtn {
+            width: 120px;
+            height: 60px;
+            background: rgb(211, 113, 32);
+        }
+        .viewBtn:hover {
+            background: rgb(207, 145, 95);
+        }
+
+    </style>
+
+    <script>
+        function viewMatch(gameId) {
+            console.log(gameId)
+        }
+    </script>
+</head>
+<body>
+    <h1 class="label">Match History</h1>
+    <table class="label">
+        <tr>
+            <td>Player 1</td>
+            <td>Player 2</td> 
+            <td>Create Date</td>
+            <td>Winner</td>
+        </tr>
+        
+        {% for game in games %}
+        <tr>
+            <td>{{ game['player1'] }}</td>
+            <td>{{ game['player2'] }}</td>
+            <td>{{ game['createDate'][0:10].replace('-','/') + ' | ' + game['createDate'][11:16] }}</td>
+            <td>{{ game['winner'] }}</td>
+            <td><button class="viewBtn" id="{{ game['gameId'] }}" onclick="viewMatch(this.id)">View Match</button></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

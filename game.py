@@ -170,6 +170,22 @@ def cancelSelectedCoordinate():
     requests.post(url, json = options)
     return redirect('/stream?player={}&color={}'.format(player, color))
 
+@app.route('/history')
+def history():
+    req = requests.get('http://localhost:8080/game/getMatches')
+    jreq = json.loads(req.text)
+
+    print(jreq)
+    return render_template('history.html', games = jreq)
+
+@app.route('/viewGame')
+def viewGame():
+    req = requests.get('http://localhost:8080/game/getMatches')
+    jreq = json.loads(req.text)
+
+    print(jreq)
+    return render_template('history.html', games = jreq)
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
