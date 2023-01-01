@@ -36,11 +36,20 @@
             background: rgb(207, 145, 95);
         }
 
+        #menuBtn {
+            margin-top: 5%;
+        }
+
     </style>
 
     <script>
         function viewMatch(gameId) {
             console.log(gameId)
+            window.location.href = window.location.href.split('5000')[0] + "5000/viewGame?gameId=" + gameId + "&moveOrder=1";
+        }
+
+        function backtoMenu() {
+            window.location.href = window.location.href.split('5000')[0] + "5000/mainpage"
         }
     </script>
 </head>
@@ -64,5 +73,6 @@
         </tr>
         {% endfor %}
     </table>
+    <button class="label" id="menuBtn" type="button" onclick="backtoMenu()">Back to Menu</button>
 </body>
 </html>

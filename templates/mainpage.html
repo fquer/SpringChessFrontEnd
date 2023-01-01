@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Main Page</title>
+    <style>
+        html {
+            background-color: rgb(230, 163, 62);
+        }
+
+        #mainDiv {
+            margin: 0 auto;
+            margin-top: 5%;
+            width: 440px;
+        }
+
+        .label {
+            font-family: Comic Sans MS;
+            color: azure;
+            -webkit-text-stroke: 0.8px black;
+            font-size: 35px;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .center {
+            text-align: center;
+            margin: auto;
+            display: block;
+            width: 252px;
+            margin-top: 5%;
+        }
+    </style>
+
+    <script>
+        function matchHistory() {
+            window.location.href = window.location.href.split('5000')[0] + "5000/history"
+        }
+
+        function playChess() {
+            window.location.href = window.location.href.split('5000')[0] + "5000/lobby"
+        }
+    </script>
+</head>
+<body>
+    <h1 class="label center">Welcome to Chess!</h1>
+    <button class="label center" onclick="matchHistory()">View Match History</button>
+    <button class="label center" onclick="playChess()">Play Game!</button>
+</body>
+</html>

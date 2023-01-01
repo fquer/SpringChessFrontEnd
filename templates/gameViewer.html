@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Viewer</title>
+
+    <style>
+        html {
+            background-color: rgb(230, 163, 62);
+            font-family: Comic Sans MS;
+            font-weight: bold;
+            color: azure;
+            -webkit-text-stroke: 1px black;
+            font-size: 15px;
+        }
+
+        table{
+            border: 5px solid rgb(150, 107, 107)
+        }
+
+        th, td {
+            border: 5px solid black;
+            width: 60px;
+            height: 72px;
+        }
+
+        #nextMoveBtn {
+            width: 200px;
+            height: 40px;
+            margin-top: 15px;
+            margin-left: 25px;
+        }
+
+        .float-left {
+            float: left;
+        }
+    </style>
+
+    <script>
+
+        function createBoard() {
+            if (document.getElementById('tableBoard') == null) {
+                table = document.createElement('table')
+                table.setAttribute('id', 'tableBoard')
+                tableBody = document.createElement('tbody')
+
+                chars = ['A','B','C','D','E','F','G','H']
+                nums = ['8', '7', '6', '5', '4', '3', '2', '1']
+                let square = 1;
+                var i = 0;
+                var iBreakPoint = 8;
+
+
+                for (i; i != iBreakPoint;) {
+                    tr = document.createElement('tr')
+                    var j = 0;
+                    var jBreakPoint = 8;
+
+                    for (j; j != jBreakPoint;) {
+                        td = document.createElement('td')
+                        td.setAttribute('id', chars[j] + nums[i])
+                        td.setAttribute('onclick', 'clickEvent(this.id)')
+                        td.style.backgroundColor = '';
+                        if (square % 2 == 0) {
+                            td.style.backgroundColor = 'grey';
+                        }
+                        else {
+                            td.style.backgroundColor = 'white';
+                        }
+                        square += 1;
+                        tr.appendChild(td)
+                        j++;
+                    }
+                    square += 1;
+                    tableBody.appendChild(tr)
+                    i++;
+
+                }
+                table.appendChild(tableBody)
+                document.body.appendChild(table)
+                player1 = document.createElement('h2')
+                player1.innerText = "White Player : {{ player1 }}"
+                document.body.appendChild(player1)
+            }
+        }
+
+        function setPieces() {
+            var board = "{{ board }}";
+            board = board.replaceAll('&#39;','"')
+            console.log(board)
+            map = JSON.parse(board)
+            mappedBoard = new Map(Object.entries(map))
+            for (const cell of mappedBoard) {
+
+                if (cell[1].piece == "Empty" && document.getElementById(cell[0]).childNodes.length != 0) {
+                    document.getElementById(cell[0]).removeChild(document.getElementById(cell[0]).childNodes[0])
+                }
+                else if (cell[1].piece != "Empty") {
+                    if (document.getElementById(cell[0]).childNodes.length != 0) {
+                        document.getElementById(cell[0]).childNodes[0].src = 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png"
+                        document.getElementById(cell[0]).childNodes[0].style.backgroundColor = '';
+                    }
+                    else {
+                        img = document.createElement('img')
+                        img.setAttribute('src', 'https://raw.githubusercontent.com/fquer/SpringChessFrontEnd/main/images/' + cell[1].colour + cell[1].piece + ".png")
+                        document.getElementById(cell[0]).appendChild(img)
+                    }
+                }
+            }
+        }
+
+        function nextMove() {
+            window.location.href = window.location.href.split('5000')[0] + "5000/viewGame?gameId={{ gameId }}&moveOrder=" + (parseInt("{{ moveOrder }}") + 1);
+        }
+
+        window.onload = () => {
+            createBoard();
+            setPieces();
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <h2 class="float-left" id="moveOrderLabel">Move Order : {{ moveOrder }}</h2>
+        <button class="float-left" id="nextMoveBtn" onclick="nextMove()">Next Move</button>    
+    </div>
+    <br>
+    <br>
+    <br>
+    <h2>{{ gameStatus }}</h2>
+    <h2>Black Player : {{ player2 }}</h2>
+</body>
+</html>

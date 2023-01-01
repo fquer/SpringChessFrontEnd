@@ -72,6 +72,10 @@
             width: 190px;
         }
 
+        #menuBtn {
+            margin-top: 20%;
+        }
+
     </style>
 
 </head>
@@ -106,9 +110,15 @@
             <button class="label button" type="button" onclick="joinGame(this.id)" id="player1">{{ player1 }}</button>
             <button class="label button" type="button" onclick="joinGame(this.id)" id="player2">{{ player2 }}</button>
         {% endif %}
+
+        <button class="label button" id="menuBtn" type="button" onclick="backtoMenu()">Back to Menu</button>
     </div>
 
     <script>
+        function backtoMenu() {
+            window.location.href = window.location.href.split('5000')[0] + "5000/mainpage"
+        }
+
         function check(id) {
             var p = document.getElementById(id);
 

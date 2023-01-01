@@ -31,7 +31,7 @@ def generate(url, options):
                     break
         sleep(1)
 
-@app.route('/')
+@app.route('/lobby')
 def home():
     req = requests.post('http://localhost:8080/game/checkLogin', json = {})
     jreq = json.loads(req.text)
@@ -40,11 +40,11 @@ def home():
         gameStat = '0'
     elif jreq['player1'] != None and jreq['player2'] != None:
         gameStat = '2'
-        return render_template('home.html', gameStatus = gameStat, player1 = jreq['player1']['login'], player2 = jreq['player2']['login'])
+        return render_template('lobby.html', gameStatus = gameStat, player1 = jreq['player1']['login'], player2 = jreq['player2']['login'])
     else:
         gameStat = '1'
 
-    return render_template('home.html', gameStatus = gameStat)
+    return render_template('lobby.html', gameStatus = gameStat)
 
 @app.route('/startGame')
 def startGame():
@@ -172,7 +172,7 @@ def cancelSelectedCoordinate():
 
 @app.route('/history')
 def history():
-    req = requests.get('http://localhost:8080/game/getMatches')
+    req = requests.get('http://localhost:8080/gameHistory/getMatches')
     jreq = json.loads(req.text)
 
     print(jreq)
@@ -180,11 +180,32 @@ def history():
 
 @app.route('/viewGame')
 def viewGame():
-    req = requests.get('http://localhost:8080/game/getMatches')
+    gameStatus = ''
+    winner = ''
+    gameId = request.args.get('gameId')
+    moveOrder = request.args.get('moveOrder')
+    options = {
+        "gameId": gameId,
+        "moveOrder": moveOrder
+    }
+    req = requests.post('http://localhost:8080/gameHistory/getMatchPlayHistory', json = options)
     jreq = json.loads(req.text)
 
-    print(jreq)
-    return render_template('history.html', games = jreq)
+    if 'error' in req.text:
+        moveOrder = str(int(moveOrder) - 1)
+        options = {
+            "gameId": gameId,
+            "moveOrder": moveOrder
+        }
+        req = requests.post('http://localhost:8080/gameHistory/getMatchPlayHistory', json = options)
+        jreq = json.loads(req.text)
+        gameStatus = 'Game ended.'
+
+    return render_template('gameViewer.html', moveOrder = moveOrder, board = jreq['board']['map'], player1 = jreq['player1']['login'], player2 = jreq['player2']['login'], gameId = gameId, gameStatus = gameStatus, winner = winner)
+
+@app.route('/mainpage')
+def mainpage():
+    return render_template('mainpage.html')
 
 if __name__ == '__main__':
     app.debug = True
